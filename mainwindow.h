@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QTimer>
+#include <QAction>
 #include "settingsdialog.h"
 #include "uart.h"
 #include "console.h"
