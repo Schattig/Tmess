@@ -15,7 +15,10 @@ ModBus::ModBus(SettingsDialog::ModBusSettings s, QObject *parent)
 void ModBus::openModBusPort()
 {
     if (!modbusDevice)
+    {
+        qDebug() << "open ModBus failed , !modBusDevice";
         return;
+    }
 
     if (modbusDevice->state() != QModbusDevice::ConnectedState) {
         modbusDevice->setConnectionParameter(QModbusDevice::SerialPortNameParameter,
@@ -49,8 +52,16 @@ void ModBus::openModBusPort()
 
 void ModBus::closeModBusPort()
 {
-    modbusDevice->disconnectDevice();
-    emit isClosed();
+    if (!modbusDevice)
+    {
+        qDebug() << "close ModBus failed , !modBusDevice";
+        return;
+    }
+
+    if (modbusDevice->state() != QModbusDevice::ConnectedState) {
+        modbusDevice->disconnectDevice();
+        emit isClosed();
+    }
 }
 
 void ModBus::readData()
