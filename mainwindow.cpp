@@ -55,6 +55,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(uart, SIGNAL(isOpened()), this, SLOT(serialOpened()));
     connect(uart, SIGNAL(isClosed()), this, SLOT(serialClosed()));
 
+    connect(modbus, SIGNAL(isOpened()), this, SLOT(modOpened()));
+    connect(modbus, SIGNAL(isClosed()), this, SLOT(modClosed()));
+
     connect(uart, &UART::readyRead, smh, &COM_handler::putData);
 
     connect(console, &Console::getData, uart, &UART::write);
@@ -88,6 +91,16 @@ void MainWindow::serialClosed()
     actionDisconnect->setDisabled(true);
     actionStart->setDisabled(true);
     actionStop->setDisabled(true);
+}
+
+void MainWindow::modOpened()
+{
+    actionReadModBus->setEnabled(true);
+}
+
+void MainWindow::modClosed()
+{
+    actionReadModBus->setDisabled(true);
 }
 
 void MainWindow::createActions()
@@ -135,6 +148,13 @@ void MainWindow::createActions()
     connect(actionStop, SIGNAL( triggered() ), this, SLOT( messStop() ));
     fileToolBar->addAction(actionStop);
 
+    fileToolBar->addSeparator();
+    fileToolBar->addSeparator();
+
+    actionReadModBus = new QAction(tr("read mod"), this);
+    actionReadModBus->setDisabled(true);
+    connect(actionReadModBus, SIGNAL( triggered() ), modbus, SLOT( readData() ));
+    fileToolBar->addAction(actionReadModBus);
 }
 
 void MainWindow::createStatusBar()

@@ -10,6 +10,8 @@ ModBus::ModBus(SettingsDialog::ModBusSettings s, QObject *parent)
 {
     settings = s;
 
+    modbusDevice = new QModbusRtuSerialMaster(this);
+
 }
 
 void ModBus::openModBusPort()
@@ -69,10 +71,16 @@ void ModBus::readData()
   int startAddress = 0;
   int numberOfEntries = 10;
   int serverAddress = 1;
+
+  if(startAddress < 0 || startAddress >= 10)
+  {
+      qDebug() << "startAddress out of range";
+      return;
+  }
+
   QModbusDataUnit::RegisterType type = QModbusDataUnit::HoldingRegisters;
 
   Q_ASSERT(startAddress >= 0 && startAddress < 10);
-  Q_ASSERT(startAddress > 10);
   numberOfEntries = qMin(numberOfEntries, 10 - startAddress);
 
   QModbusDataUnit readRequest = QModbusDataUnit(type, startAddress, static_cast<quint16>(numberOfEntries));
@@ -119,7 +127,6 @@ void ModBus::changeSettings(SettingsDialog::ModBusSettings s)
 {
     settings = s;
 }
-
 
 
 

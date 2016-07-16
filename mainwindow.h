@@ -29,6 +29,9 @@ private slots:
     void serialOpened();
     void serialClosed();
 
+    void modOpened();
+    void modClosed();
+
     void messStart();
     void messStop();
 
@@ -53,6 +56,8 @@ private:
 
     QAction *actionStart;
     QAction *actionStop;
+
+    QAction *actionReadModBus;
 
     QTimer *messIntervall;
 
