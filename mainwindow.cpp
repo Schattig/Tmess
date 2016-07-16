@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 
 {
-
+//test
 }
 
 void MainWindow::serialOpened()
