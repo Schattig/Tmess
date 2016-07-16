@@ -1,9 +1,11 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QWidget>
 #include <QMessageBox>
 #include <QByteArray>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QToolBar>
 #include "settingsdialog.h"
 #include "console.h"
 #include "borderlayout.h"
