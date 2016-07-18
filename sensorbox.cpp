@@ -15,7 +15,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QHBoxLayout *topLayout = new QHBoxLayout;
     QHBoxLayout *bottomLayout = new QHBoxLayout;
-    QComboBox *pinSelect = new QComboBox;
+    pinSelect = new QComboBox;
     QCheckBox *checkActive = new QCheckBox;
     QGroupBox *frontBox = new QGroupBox("Front");
     QGroupBox *rearBox = new QGroupBox("Haube");
@@ -69,6 +69,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     setEnabled(false);
 
     connect(checkActive, &QCheckBox::stateChanged, this, &SensorBox::checkActiveChanged);
+    connect(pinSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(portComboboxChanged(int)));
 }
 
 void SensorBox::checkActiveChanged(int state)
@@ -140,4 +141,35 @@ void SensorBox::clearTemp()
     {
         sensorsB[i]->setText("");
     }
+}
+
+void SensorBox::addPort(QString text, sensors::Port port)
+{
+    pinSelect->addItem(text, port);
+}
+
+void SensorBox::addPort(QList<sensorEntry> sensors)
+{
+
+    for(int i = 0; i < sensors.size(); i++)
+    {
+        addPort(sensors[i].name, sensors[i].port);
+    }
+}
+
+int SensorBox::portComboboxChanged(int index)
+{
+    if(pinSelect->currentData() == sensors::Pin1)
+        currentPort = sensors::Pin1;
+    if(pinSelect->currentData() == sensors::Pin2)
+        currentPort = sensors::Pin2;
+    if(pinSelect->currentData() == sensors::Pin3)
+        currentPort = sensors::Pin3;
+
+    return index;
+}
+
+sensors::Port SensorBox::getPort()
+{
+    return currentPort;
 }

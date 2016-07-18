@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     COM_handler.cpp \
     modbus.cpp \
     pyranobox.cpp \
-    mod_handler.cpp
+    mod_handler.cpp \
+    sensors.cpp \
+    sensordialog.cpp
 
 HEADERS  += mainwindow.h \
     settingsdialog.h \
@@ -33,8 +35,11 @@ HEADERS  += mainwindow.h \
     COM_handler.h \
     modbus.h \
     pyranobox.h \
-    mod_handler.h
+    mod_handler.h \
+    sensors.h \
+    sensordialog.h
 
 FORMS    += \
-    settingsdialog.ui
+    settingsdialog.ui \
+    sensordialog.ui
 

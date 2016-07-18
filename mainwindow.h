@@ -13,6 +13,8 @@
 #include "modbus.h"
 #include "pyranobox.h"
 #include "mod_handler.h"
+#include "sensors.h"
+#include "sensordialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
+    struct monitor{
+        sensors front;
+        sensors back;
+    };
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -40,12 +48,16 @@ private slots:
 
     void modUpdate();
 
+    void test();
+
 private:
     void createActions();
     void createStatusBar();
     void createConnections();
+    void createComboEntrys();
 
     SettingsDialog *settings;
+    SensorDialog *sensorSettings;
     UART *uart;
     Console *console;
     ModBus *modbus;
@@ -58,6 +70,7 @@ private:
     MOD_handler *modh;
 
     QAction *actionSettings;
+    QAction *actionSensorSettings;
     QAction *actionConnect;
     QAction *actionDisconnect;
     QAction *actionClear;
@@ -65,10 +78,12 @@ private:
     QAction *actionStart;
     QAction *actionStop;
 
-    QAction *actionReadModBus;
+    QAction *actionTest;
 
     QTimer *messIntervall;
 
+    monitor *sensMon1;
+    monitor *sensMon2;
 };
 
 #endif // MAINWINDOW_H

@@ -55,6 +55,11 @@ void COM_handler::putData(const QByteArray &data)
         idStart = false;
 
         qDebug() << "readID : " << *readID << " ; crc :" << lastCRC ;
+
+        if(lastCRC)
+            emit serialReady(QString::fromStdString(readID->toStdString()));
+        else
+            emit serialReady(QString("crc fail"));
     }
 
     if( log->contains( QByteArray("id?") ) )
@@ -89,6 +94,8 @@ void COM_handler::putData(const QByteArray &data)
         idMeas = false;
 
         qDebug() << "Temp : " << lastTemp ;
+
+        emit measReady(lastTemp);
     }
 
 }
@@ -103,3 +110,7 @@ void COM_handler::messung()
     uart->write("m");
 }
 
+void COM_handler::requestSerial()
+{
+    uart->write("s");
+}
