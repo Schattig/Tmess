@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QLabel>
 
+#include <QDebug>
 
 PyranoBox::PyranoBox(QString name, QWidget *parent) : QWidget(parent)
 {
@@ -15,15 +16,15 @@ PyranoBox::PyranoBox(QString name, QWidget *parent) : QWidget(parent)
     QHBoxLayout *tempLayout = new QHBoxLayout;
 
     QLabel *watt = new QLabel("w/m² :");
-    QLabel *temp = new QLabel("Sensor Temperatur :");
+    QLabel *temp = new QLabel("Temperatur °C:");
     showWatt = new QLineEdit;
     showTemp = new QLineEdit;
 
-    watt->setFixedWidth(100);
-    temp->setFixedWidth(100);
+    watt->setFixedWidth(75);
+    temp->setFixedWidth(75);
 
-    showWatt->setFixedWidth(75);
-    showTemp->setFixedWidth(75);
+    showWatt->setFixedWidth(40);
+    showTemp->setFixedWidth(40);
 
     wattLayout->addWidget(watt);
     wattLayout->addWidget(showWatt);
@@ -47,12 +48,15 @@ PyranoBox::PyranoBox(QString name, QWidget *parent) : QWidget(parent)
 
 void PyranoBox::writeWatt(int watt)
 {
-    showWatt->setText(QString().append(watt));
+    //qDebug() << "watt P: " << watt;
+    showWatt->setText(QString("%1").arg(watt));
 }
 
 void PyranoBox::writeTemp(int temp)
 {
-    showTemp->setText(QString().append(temp));
+    //qDebug() << "temp P: " << temp;
+    double dtemp = static_cast<double>(temp)/10;
+    showTemp->setText(QString("%1").arg(dtemp));
 }
 
 void PyranoBox::clear()

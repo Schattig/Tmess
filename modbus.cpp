@@ -110,11 +110,14 @@ void ModBus::readFinished()
          const QModbusDataUnit data = reply->result();
          emit readyRead(data);
 
+         /* Debug */
+         /*
          qDebug() << "recieved ModBus data count: " << data.valueCount() ;
          qDebug() << "ModBus data : ";
          for (uint i = 0; i < data.valueCount(); i++) {
-             qDebug() << data.value(static_cast<int>(i));
+             qDebug() << "[" << i << "]" << data.value(static_cast<int>(i));
          }
+         */
 
      } else if (reply->error() == QModbusDevice::ProtocolError) {
          qDebug() << " Read response error : " << reply->errorString() << " (ModBus exception: "
