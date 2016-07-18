@@ -11,7 +11,8 @@
 #include "COM_handler.h"
 #include "sensorbox.h"
 #include "modbus.h"
-
+#include "pyranobox.h"
+#include "mod_handler.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,9 +36,14 @@ private slots:
     void messStart();
     void messStop();
 
+    void monitorCheckChanged(bool state);
+
+    void modUpdate();
+
 private:
     void createActions();
     void createStatusBar();
+    void createConnections();
 
     SettingsDialog *settings;
     UART *uart;
@@ -46,8 +52,10 @@ private:
 
     SensorBox *monitor1;
     SensorBox *monitor2;
+    PyranoBox *pyranoBox;
 
-    COM_handler *smh;
+    COM_handler *comh;
+    MOD_handler *modh;
 
     QAction *actionSettings;
     QAction *actionConnect;

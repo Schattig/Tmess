@@ -18,6 +18,7 @@ public:
     bool isEnabled();
 
 signals:
+    void checkChanged(bool state);
 
 public slots:
     void checkActiveChanged(int state);

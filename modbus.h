@@ -27,7 +27,7 @@ signals:
 public:
     explicit ModBus(SettingsDialog::ModBusSettings s, QObject *parent = 0);
 
-    void setQuery(int startAdress, int numberOfEntries);
+    //void setQuery(int startAdress, int numberOfEntries);
 
 public slots:
     void openModBusPort();

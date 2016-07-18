@@ -41,10 +41,10 @@ void ModBus::openModBusPort()
         modbusDevice->setTimeout(settings.responseTime);
         modbusDevice->setNumberOfRetries(settings.numberOfRetries);
 
-        if (!modbusDevice->connectDevice()) {
-            qDebug() << "ModBus connect failed";
-        } else {
+        if (modbusDevice->connectDevice() && (modbusDevice->state() == QModbusDevice::ConnectedState)) {
             emit isOpened();
+        } else {
+            qDebug() << "ModBus connect failed";
         }
     } else {
         qDebug() << "ModBus allready connected";
@@ -62,16 +62,21 @@ void ModBus::closeModBusPort()
 
     if (modbusDevice->state() != QModbusDevice::ConnectedState) {
         modbusDevice->disconnectDevice();
-        emit isClosed();
     }
+
+    emit isClosed();
 }
 
 void ModBus::readData()
 {
+  if (modbusDevice->state() != QModbusDevice::ConnectedState)
+    return;
+
   int startAddress = 0;
   int numberOfEntries = 10;
   int serverAddress = 1;
 
+  Q_ASSERT(startAddress >= 0 && startAddress < 10);
   if(startAddress < 0 || startAddress >= 10)
   {
       qDebug() << "startAddress out of range";
@@ -80,7 +85,6 @@ void ModBus::readData()
 
   QModbusDataUnit::RegisterType type = QModbusDataUnit::HoldingRegisters;
 
-  Q_ASSERT(startAddress >= 0 && startAddress < 10);
   numberOfEntries = qMin(numberOfEntries, 10 - startAddress);
 
   QModbusDataUnit readRequest = QModbusDataUnit(type, startAddress, static_cast<quint16>(numberOfEntries));

@@ -14,30 +14,33 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setMinimumHeight(300);
+    setMinimumHeight(400);
     setMinimumWidth(700);
 
     QWidget *centralWidget = new QWidget(this);
     QWidget *eastWidget = new QWidget(this);
-    BorderLayout *mainLayout = new BorderLayout;
-    BorderLayout *eastLayout = new BorderLayout;
+    BorderLayout *mainLayout = new BorderLayout();
+    BorderLayout *eastLayout = new BorderLayout();
 
-    console = new Console;
-    settings = new SettingsDialog;
+    console = new Console(this);
+    settings = new SettingsDialog(this);
     uart = new UART(settings->settings());
     modbus = new ModBus(settings->modSettings());
-    smh = new COM_handler(uart);
+    comh = new COM_handler(uart);
+    modh = new MOD_handler(modbus);
 
     messIntervall = new QTimer(this);
     messIntervall->setInterval(3000);
 
-    monitor1 = new SensorBox("Monitor 1");
-    monitor2 = new SensorBox("Monitor 2");
+    monitor1 = new SensorBox("Monitor 1", this);
+    monitor2 = new SensorBox("Monitor 2", this);
+    pyranoBox = new PyranoBox("Pyrano Meter", this);
 
     mainLayout->addWidget(console, BorderLayout::Center);
     mainLayout->addWidget(eastWidget, BorderLayout::East);
     eastLayout->addWidget(monitor2, BorderLayout::East);
     eastLayout->addWidget(monitor1, BorderLayout::East);
+    eastLayout->addWidget(pyranoBox, BorderLayout::North);
 
     eastWidget->setLayout(eastLayout);
     centralWidget->setLayout(mainLayout);
@@ -45,62 +48,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createActions();
     createStatusBar();
-
-    connect(settings, SIGNAL(changed(SettingsDialog::Settings)),
-            uart, SLOT(changeSettings(SettingsDialog::Settings)) );
-
-    connect(settings, SIGNAL(modChanged(SettingsDialog::ModBusSettings)),
-            modbus, SLOT(changeSettings(SettingsDialog::ModBusSettings)) );
-
-    connect(uart, SIGNAL(isOpened()), this, SLOT(serialOpened()));
-    connect(uart, SIGNAL(isClosed()), this, SLOT(serialClosed()));
-
-    connect(modbus, SIGNAL(isOpened()), this, SLOT(modOpened()));
-    connect(modbus, SIGNAL(isClosed()), this, SLOT(modClosed()));
-
-    connect(uart, &UART::readyRead, smh, &COM_handler::putData);
-
-    connect(console, &Console::getData, uart, &UART::write);
-
-    connect(messIntervall, SIGNAL( timeout() ), smh, SLOT( messung() ));
-
-    /* DEBUG Ausgabe -> alles auf konsole ausgeben */
-    connect(uart, &UART::readyRead, console, &Console::putData);
+    createConnections();
 }
 MainWindow::~MainWindow()
 
 {
-//test
-}
-
-void MainWindow::serialOpened()
-{
-    console->setLocalEchoEnabled(settings->getEchoState());
-    console->setEnabled(true);
-    actionConnect->setDisabled(true);
-    actionDisconnect->setEnabled(true);
-    actionStart->setEnabled(true);
-    smh->connected();
-}
-
-void MainWindow::serialClosed()
-{
-    messIntervall->stop();
-    console->setDisabled(true);
-    actionConnect->setEnabled(true);
-    actionDisconnect->setDisabled(true);
-    actionStart->setDisabled(true);
-    actionStop->setDisabled(true);
-}
-
-void MainWindow::modOpened()
-{
-    actionReadModBus->setEnabled(true);
-}
-
-void MainWindow::modClosed()
-{
-    actionReadModBus->setDisabled(true);
+    delete uart;
+    delete modbus;
+    delete comh;
+    delete modh;
 }
 
 void MainWindow::createActions()
@@ -162,6 +118,80 @@ void MainWindow::createStatusBar()
     statusBar()->showMessage(tr("Ready"));
 }
 
+void MainWindow::createConnections()
+{
+    connect(settings, SIGNAL(changed(SettingsDialog::Settings)),
+            uart, SLOT(changeSettings(SettingsDialog::Settings)) );
+
+    connect(settings, SIGNAL(modChanged(SettingsDialog::ModBusSettings)),
+            modbus, SLOT(changeSettings(SettingsDialog::ModBusSettings)) );
+
+    connect(uart, SIGNAL(isOpened()), this, SLOT(serialOpened()));
+    connect(uart, SIGNAL(isClosed()), this, SLOT(serialClosed()));
+
+    connect(modbus, SIGNAL(isOpened()), this, SLOT(modOpened()));
+    connect(modbus, SIGNAL(isClosed()), this, SLOT(modClosed()));
+
+    connect(console, &Console::getData, uart, &UART::write);
+
+    connect(messIntervall, SIGNAL( timeout() ), comh, SLOT( messung() ));
+    connect(messIntervall, SIGNAL( timeout() ), modbus, SLOT(readData() ));
+
+    connect(monitor1, SIGNAL(checkChanged(bool)), this, SLOT(monitorCheckChanged(bool)));
+    connect(monitor2, SIGNAL(checkChanged(bool)), this, SLOT(monitorCheckChanged(bool)));
+
+    connect(modh, SIGNAL(update()), this, SLOT(modUpdate()));
+
+
+    /* DEBUG Ausgabe -> alles auf konsole ausgeben */
+    connect(uart, &UART::readyRead, console, &Console::putData);
+}
+
+void MainWindow::serialOpened()
+{
+    console->setLocalEchoEnabled(settings->getEchoState());
+    console->setEnabled(true);
+    actionConnect->setDisabled(true);
+    actionDisconnect->setEnabled(true);
+    actionStart->setEnabled(true);
+    comh->connected();
+
+    if(monitor1->isEnabled())
+        monitor1->setEnabled(true);
+
+    if(monitor2->isEnabled())
+        monitor2->setEnabled(true);
+}
+
+void MainWindow::serialClosed()
+{
+    messIntervall->stop();
+    console->setDisabled(true);
+    actionConnect->setEnabled(true);
+    actionDisconnect->setDisabled(true);
+    actionStart->setDisabled(true);
+    actionStop->setDisabled(true);
+
+    monitor1->setEnabled(false);
+    monitor2->setEnabled(false);
+}
+
+void MainWindow::modOpened()
+{
+    actionReadModBus->setEnabled(true);
+
+    pyranoBox->clear();
+    pyranoBox->setEnabled(true);
+}
+
+void MainWindow::modClosed()
+{
+    actionReadModBus->setDisabled(true);
+
+    pyranoBox->clear();
+    pyranoBox->setEnabled(false);
+}
+
 void MainWindow::messStart()
 {
     actionStart->setDisabled(true);
@@ -174,4 +204,22 @@ void MainWindow::messStop()
     messIntervall->stop();
     actionStop->setDisabled(true);
     actionStart->setEnabled(true);
+}
+
+void MainWindow::monitorCheckChanged(bool state)
+{
+    if(!uart->isOpen())
+        return;
+
+    if(QObject::sender() == monitor1)
+        monitor1->setEnabled(state);
+
+    if(QObject::sender() == monitor2)
+        monitor2->setEnabled(state);
+}
+
+void MainWindow::modUpdate()
+{
+    pyranoBox->writeTemp(modh->getTemp());
+    pyranoBox->writeWatt(modh->getWatt());
 }

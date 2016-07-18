@@ -75,13 +75,15 @@ void SensorBox::checkActiveChanged(int state)
 {
     if(state == Qt::Checked)
     {
-        setEnabled(true);
+        //setEnabled(true);
+        emit checkChanged(true);
         enabled = true;
     }
     if(state == Qt::Unchecked)
     {
-        setEnabled(false);
+        //setEnabled(false);
         clearTemp();
+        emit checkChanged(false);
         enabled = false;
     }
 
@@ -112,19 +114,17 @@ void SensorBox::writeTemp(int temp, int sensor, Position position)
 
     if(position == Position::Front)
     {
-        if(sensor >= 0 || sensor < NumSensorF)
+        if(sensor >= 0 && sensor < NumSensorF)
         {
-            QString text;
-            sensorsF[sensor]->setText(text.append(temp));
+            sensorsF[sensor]->setText(QString().append(temp));
         }
     }
 
     if(position == Position::Back)
     {
-        if(sensor >= 0 || sensor < NumSensorB)
+        if(sensor >= 0 && sensor < NumSensorB)
         {
-            QString text;
-            sensorsB[sensor]->setText(text.append(temp));
+            sensorsB[sensor]->setText(QString().append(temp));
         }
     }
 }
