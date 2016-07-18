@@ -21,6 +21,8 @@ signals:
 public:
     UART(SettingsDialog::Settings s);
 
+    bool isOpen();
+
 public slots:
     void openSerialPort();
     void closeSerialPort();

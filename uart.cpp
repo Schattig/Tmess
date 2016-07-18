@@ -85,3 +85,8 @@ void UART::write(const QByteArray &data)
 {
     serial->write(data);
 }
+
+bool UART::isOpen()
+{
+    return serial->isOpen();
+}

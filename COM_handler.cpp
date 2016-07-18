@@ -8,6 +8,8 @@ COM_handler::COM_handler(UART *uart)
     log = new QByteArray();
     readID = new QByteArray();
     sendID = new QByteArray();
+
+    connect(uart, &UART::readyRead, this, &COM_handler::putData);
 }
 
 void COM_handler::putData(const QByteArray &data)

@@ -10,12 +10,17 @@ ModBus::ModBus(SettingsDialog::ModBusSettings s, QObject *parent)
 {
     settings = s;
 
+    modbusDevice = new QModbusRtuSerialMaster(this);
+
 }
 
 void ModBus::openModBusPort()
 {
     if (!modbusDevice)
+    {
+        qDebug() << "open ModBus failed , !modBusDevice";
         return;
+    }
 
     if (modbusDevice->state() != QModbusDevice::ConnectedState) {
         modbusDevice->setConnectionParameter(QModbusDevice::SerialPortNameParameter,
@@ -36,10 +41,10 @@ void ModBus::openModBusPort()
         modbusDevice->setTimeout(settings.responseTime);
         modbusDevice->setNumberOfRetries(settings.numberOfRetries);
 
-        if (!modbusDevice->connectDevice()) {
-            qDebug() << "ModBus connect failed";
-        } else {
+        if (modbusDevice->connectDevice() && (modbusDevice->state() == QModbusDevice::ConnectedState)) {
             emit isOpened();
+        } else {
+            qDebug() << "ModBus connect failed";
         }
     } else {
         qDebug() << "ModBus allready connected";
@@ -49,19 +54,37 @@ void ModBus::openModBusPort()
 
 void ModBus::closeModBusPort()
 {
-    modbusDevice->disconnectDevice();
+    if (!modbusDevice)
+    {
+        qDebug() << "close ModBus failed , !modBusDevice";
+        return;
+    }
+
+    if (modbusDevice->state() != QModbusDevice::ConnectedState) {
+        modbusDevice->disconnectDevice();
+    }
+
     emit isClosed();
 }
 
 void ModBus::readData()
 {
+  if (modbusDevice->state() != QModbusDevice::ConnectedState)
+    return;
+
   int startAddress = 0;
   int numberOfEntries = 10;
   int serverAddress = 1;
-  QModbusDataUnit::RegisterType type = QModbusDataUnit::HoldingRegisters;
 
   Q_ASSERT(startAddress >= 0 && startAddress < 10);
-  Q_ASSERT(startAddress > 10);
+  if(startAddress < 0 || startAddress >= 10)
+  {
+      qDebug() << "startAddress out of range";
+      return;
+  }
+
+  QModbusDataUnit::RegisterType type = QModbusDataUnit::HoldingRegisters;
+
   numberOfEntries = qMin(numberOfEntries, 10 - startAddress);
 
   QModbusDataUnit readRequest = QModbusDataUnit(type, startAddress, static_cast<quint16>(numberOfEntries));
@@ -87,11 +110,14 @@ void ModBus::readFinished()
          const QModbusDataUnit data = reply->result();
          emit readyRead(data);
 
+         /* Debug */
+         /*
          qDebug() << "recieved ModBus data count: " << data.valueCount() ;
          qDebug() << "ModBus data : ";
          for (uint i = 0; i < data.valueCount(); i++) {
-             qDebug() << data.value(static_cast<int>(i));
+             qDebug() << "[" << i << "]" << data.value(static_cast<int>(i));
          }
+         */
 
      } else if (reply->error() == QModbusDevice::ProtocolError) {
          qDebug() << " Read response error : " << reply->errorString() << " (ModBus exception: "
@@ -108,7 +134,6 @@ void ModBus::changeSettings(SettingsDialog::ModBusSettings s)
 {
     settings = s;
 }
-
 
 
 
