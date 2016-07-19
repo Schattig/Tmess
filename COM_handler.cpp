@@ -2,9 +2,10 @@
 
 #include <QDebug>
 
-COM_handler::COM_handler(UART *uart)
+COM_handler::COM_handler(UART *uart, SensorDialog *sDialog)
 {
     this->uart = uart;
+    this->sDialog = sDialog;
     log = new QByteArray();
     readID = new QByteArray();
     sendID = new QByteArray();

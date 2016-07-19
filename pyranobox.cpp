@@ -20,8 +20,8 @@ PyranoBox::PyranoBox(QString name, QWidget *parent) : QWidget(parent)
     showWatt = new QLineEdit;
     showTemp = new QLineEdit;
 
-    watt->setFixedWidth(75);
-    temp->setFixedWidth(75);
+    watt->setFixedWidth(85);
+    temp->setFixedWidth(85);
 
     showWatt->setFixedWidth(40);
     showTemp->setFixedWidth(40);

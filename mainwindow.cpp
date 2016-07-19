@@ -18,7 +18,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setMinimumHeight(400);
+    setMinimumHeight(420);
     setMinimumWidth(700);
 
     QWidget *centralWidget = new QWidget(this);
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sensorSettings = new SensorDialog(this);
     uart = new UART(settings->settings());
     modbus = new ModBus(settings->modSettings());
-    comh = new COM_handler(uart);
+    comh = new COM_handler(uart, sensorSettings);
     modh = new MOD_handler(modbus);
 
     messIntervall = new QTimer(this);

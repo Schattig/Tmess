@@ -6,6 +6,7 @@
 #include <QString>
 #include <QStateMachine>
 #include "uart.h"
+#include "sensordialog.h"
 
 class COM_handler : public QObject
 {
@@ -18,7 +19,7 @@ signals:
     void measReady(QString temp);
 
 public:
-    COM_handler(UART *uart);
+    COM_handler(UART *uart, SensorDialog *sDialog);
 
 public slots:
     void putData(const QByteArray &data);
@@ -28,6 +29,10 @@ public slots:
 
 private:
     UART *uart;
+    SensorDialog *sDialog;
+    SensorDialog::monitor mon1;
+    SensorDialog::monitor mon2;
+    sensors *other;
     QByteArray *log;
 
     bool idStart = false;
