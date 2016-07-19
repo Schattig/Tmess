@@ -249,7 +249,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="readButton">
         <property name="text">
          <string>read serial</string>
         </property>

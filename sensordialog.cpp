@@ -28,6 +28,12 @@ SensorDialog::SensorDialog(QWidget *parent) :
             this, &SensorDialog::apply);
     connect(ui->cancelButton, &QPushButton::clicked,
             this, &SensorDialog::cancel);
+    connect(ui->readButton, &QPushButton::clicked,
+            this, &SensorDialog::readSerialClicked);
+    connect(ui->saveButton, &QPushButton::clicked,
+            this, &SensorDialog::saveSerials);
+    connect(ui->openButton, &QPushButton::clicked,
+            this, &SensorDialog::openSerials);
 
     setOrder();
     generateList();
@@ -59,6 +65,21 @@ void SensorDialog::apply()
 void SensorDialog::cancel()
 {
     hide();
+}
+
+void SensorDialog::readSerialClicked()
+{
+    emit requestSerial();
+}
+
+void SensorDialog::openSerials()
+{
+
+}
+
+void SensorDialog::saveSerials()
+{
+
 }
 
 void SensorDialog::setOrder()

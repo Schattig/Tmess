@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QList>
+#include "sensors.h"
 
 namespace Ui {
 class SensorDialog;
@@ -23,8 +24,17 @@ class SensorDialog : public QDialog
     Q_OBJECT
 
 public:
+
+    struct monitor{
+        sensors front;
+        sensors back;
+    };
+
     explicit SensorDialog(QWidget *parent = 0);
     ~SensorDialog();
+
+signals:
+    void requestSerial();
 
 public slots:
     void putSerial(QString serial);
@@ -32,6 +42,9 @@ public slots:
 private slots:
     void apply();
     void cancel();
+    void readSerialClicked();
+    void saveSerials();
+    void openSerials();
 
 private:
     void setOrder();
@@ -39,6 +52,9 @@ private:
     Ui::SensorDialog *ui;
     QList<MyLineEdit*> *lineList;
 
+    monitor *sensMon1;
+    monitor *sensMon2;
+    sensors *sensOther;
 };
 
 #endif // SENSORDIALOG_H

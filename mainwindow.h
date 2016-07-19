@@ -13,7 +13,7 @@
 #include "modbus.h"
 #include "pyranobox.h"
 #include "mod_handler.h"
-#include "sensors.h"
+//#include "sensors.h"
 #include "sensordialog.h"
 
 namespace Ui {
@@ -25,12 +25,6 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-
-    struct monitor{
-        sensors front;
-        sensors back;
-    };
-
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -81,9 +75,6 @@ private:
     QAction *actionTest;
 
     QTimer *messIntervall;
-
-    monitor *sensMon1;
-    monitor *sensMon2;
 };
 
 #endif // MAINWINDOW_H

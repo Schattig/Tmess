@@ -20,8 +20,6 @@ signals:
 public:
     COM_handler(UART *uart);
 
-
-
 public slots:
     void putData(const QByteArray &data);
     void connected();

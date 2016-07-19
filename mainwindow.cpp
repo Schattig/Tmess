@@ -151,6 +151,9 @@ void MainWindow::createConnections()
 
     connect(modh, SIGNAL(update()), this, SLOT(modUpdate()));
 
+    connect(sensorSettings, SIGNAL(requestSerial()), comh, SLOT(requestSerial()));
+    connect(comh, SIGNAL(serialReady(QString)), sensorSettings, SLOT(putSerial(QString)));
+
 
     /* DEBUG Ausgabe -> alles auf konsole ausgeben */
     connect(uart, &UART::readyRead, console, &Console::putData);

@@ -13,12 +13,15 @@ public:
 
     explicit sensors(QObject *parent = 0);
 
+    void appendSensor(QString serial);
+    QStringList getList();
+
 signals:
 
 public slots:
 
 private:
-    QStringList sensorList;
+    QStringList *sensorList;
 };
 
 #endif // SENSORS_H

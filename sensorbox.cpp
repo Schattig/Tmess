@@ -37,6 +37,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
 
         sensorsF[i] = new QLineEdit;
         sensorsF[i]->setFixedSize(sizeTemp);
+        sensorsF[i]->setReadOnly(true);
         frontLayout->addWidget(sensorsF[i], row, column);
 
         column++;
@@ -45,6 +46,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     {
         sensorsB[i] = new QLineEdit;
         sensorsB[i]->setFixedSize(sizeTemp);
+        sensorsB[i]->setReadOnly(true);
         rearLayout->addWidget(sensorsB[i]);
     }
 
