@@ -16,9 +16,16 @@ void COM_handler::putData(const QByteArray &data)
 {
     log->append(data);
 
-    if( log->contains( QByteArray("id: ") ) )
+    if( log->contains( QByteArray("id: ") ) && reqSerial  )
     {
+        reqSerial = false;
         idStart = true;
+    }
+
+    if( log->contains( QByteArray("kein Sensor erkannt") ) && reqSerial  )
+    {
+        reqSerial = false;
+        emit serialReady(QString("nicht erkannt"));
     }
 
     if( idStart && log->contains( QByteArray("rdyread") ) )
@@ -62,7 +69,7 @@ void COM_handler::putData(const QByteArray &data)
             emit serialReady(QString("crc fail"));
     }
 
-    if( log->contains( QByteArray("id?") ) )
+    if( log->contains( QByteArray("id?") ))
     {
         sendID = readID; // debug
 
@@ -113,4 +120,5 @@ void COM_handler::messung()
 void COM_handler::requestSerial()
 {
     uart->write("s");
+    reqSerial = true;
 }

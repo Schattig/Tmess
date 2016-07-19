@@ -32,6 +32,7 @@ private:
 
     bool idStart = false;
     bool idMeas = false;
+    bool reqSerial = false;
     QByteArray *readID;
     QByteArray *sendID;
     bool lastCRC = false;

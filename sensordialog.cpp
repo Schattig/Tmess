@@ -22,6 +22,8 @@ SensorDialog::SensorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->readButton->setFocusPolicy(Qt::NoFocus);
+
     lineList = new QList<MyLineEdit*>;
 
     connect(ui->applyButton, &QPushButton::clicked,

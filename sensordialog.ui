@@ -61,6 +61,11 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="1">
        <widget class="MyLineEdit" name="lineEdit_15">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -71,6 +76,11 @@
       </item>
       <item row="0" column="2">
        <widget class="MyLineEdit" name="lineEdit_13">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="cursorPosition">
          <number>0</number>
         </property>
@@ -84,6 +94,11 @@
       </item>
       <item row="0" column="1">
        <widget class="MyLineEdit" name="lineEdit_12">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="cursorPosition">
          <number>0</number>
         </property>
@@ -97,6 +112,11 @@
       </item>
       <item row="1" column="0">
        <widget class="MyLineEdit" name="lineEdit_14">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -107,6 +127,11 @@
       </item>
       <item row="1" column="2">
        <widget class="MyLineEdit" name="lineEdit_16">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -117,6 +142,11 @@
       </item>
       <item row="0" column="0">
        <widget class="MyLineEdit" name="lineEdit_11">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -136,6 +166,11 @@
       </item>
       <item row="2" column="0">
        <widget class="MyLineEdit" name="lineEdit_17">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -146,6 +181,11 @@
       </item>
       <item row="2" column="1">
        <widget class="MyLineEdit" name="lineEdit_18">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -156,6 +196,11 @@
       </item>
       <item row="2" column="2">
        <widget class="MyLineEdit" name="lineEdit_19">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -191,6 +236,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="MyLineEdit" name="lineEdit_110">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -201,6 +251,11 @@
       </item>
       <item>
        <widget class="MyLineEdit" name="lineEdit_111">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -211,6 +266,11 @@
       </item>
       <item>
        <widget class="MyLineEdit" name="lineEdit_112">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -353,6 +413,11 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="1">
        <widget class="MyLineEdit" name="lineEdit_25">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -363,6 +428,11 @@
       </item>
       <item row="0" column="2">
        <widget class="MyLineEdit" name="lineEdit_23">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -373,6 +443,11 @@
       </item>
       <item row="0" column="1">
        <widget class="MyLineEdit" name="lineEdit_22">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -383,6 +458,11 @@
       </item>
       <item row="1" column="0">
        <widget class="MyLineEdit" name="lineEdit_24">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -393,6 +473,11 @@
       </item>
       <item row="1" column="2">
        <widget class="MyLineEdit" name="lineEdit_26">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -403,6 +488,11 @@
       </item>
       <item row="0" column="0">
        <widget class="MyLineEdit" name="lineEdit_21">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -416,6 +506,11 @@
       </item>
       <item row="2" column="0">
        <widget class="MyLineEdit" name="lineEdit_27">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -426,6 +521,11 @@
       </item>
       <item row="2" column="1">
        <widget class="MyLineEdit" name="lineEdit_28">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -436,6 +536,11 @@
       </item>
       <item row="2" column="2">
        <widget class="MyLineEdit" name="lineEdit_29">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -471,6 +576,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
        <widget class="MyLineEdit" name="lineEdit_210">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -481,6 +591,11 @@
       </item>
       <item>
        <widget class="MyLineEdit" name="lineEdit_211">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -491,6 +606,11 @@
       </item>
       <item>
        <widget class="MyLineEdit" name="lineEdit_212">
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>false</bool>
         </property>
@@ -537,6 +657,11 @@
      </item>
      <item>
       <widget class="MyLineEdit" name="lineEdit_31">
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
        <property name="readOnly">
         <bool>false</bool>
        </property>
@@ -569,6 +694,11 @@
      </item>
      <item>
       <widget class="MyLineEdit" name="lineEdit_32">
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
        <property name="readOnly">
         <bool>false</bool>
        </property>

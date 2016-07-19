@@ -59,10 +59,12 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 
 {
+    /*
     delete uart;
     delete modbus;
     delete comh;
     delete modh;
+    */
 }
 
 void MainWindow::createActions()
