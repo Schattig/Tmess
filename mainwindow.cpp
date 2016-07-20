@@ -59,12 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 
 {
-    /*
-    delete uart;
-    delete modbus;
-    delete comh;
-    delete modh;
-    */
+
 }
 
 void MainWindow::createActions()
@@ -163,6 +158,7 @@ void MainWindow::createConnections()
 
 void MainWindow::createComboEntrys()
 {
+    /*
     QList<SensorBox::sensorEntry> entrys;
 
     SensorBox::sensorEntry entry1;
@@ -182,6 +178,7 @@ void MainWindow::createComboEntrys()
 
     monitor1->addPort(entrys);
     monitor2->addPort(entrys);
+    */
 }
 
 void MainWindow::serialOpened()
@@ -259,5 +256,9 @@ void MainWindow::modUpdate()
 
 void MainWindow::test()
 {
-    sensorSettings->putSerial("test");
+    int tempF[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int tempB[] = {0, 1, 2,};
+
+    monitor1->fillFront(tempF);
+    monitor1->fillBack(tempB);
 }

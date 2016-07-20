@@ -9,13 +9,29 @@ COM_handler::COM_handler(UART *uart, SensorDialog *sDialog)
     log = new QByteArray();
     readID = new QByteArray();
     sendID = new QByteArray();
+    allSensors = new QList<sensor*>;
+
+    updateAllSensors();
 
     connect(uart, &UART::readyRead, this, &COM_handler::putData);
+    connect(sDialog, SIGNAL(sensorsChanged()), this, SLOT(updateAllSensors()));
 }
 
 void COM_handler::putData(const QByteArray &data)
 {
     log->append(data);
+
+    if( log->contains( QByteArray("...connected") ))
+    {
+        //qDebug() << "connected";
+        sendAllSensors();
+        log->remove(0, log->length());
+    }
+
+    if( log->contains( QByteArray("case get all") ) && sendAll  )
+    {
+
+    }
 
     if( log->contains( QByteArray("id: ") ) && reqSerial  )
     {
@@ -27,9 +43,10 @@ void COM_handler::putData(const QByteArray &data)
     {
         reqSerial = false;
         emit serialReady(QString("nicht erkannt"));
+        log->remove(0, log->length());
     }
 
-    if( idStart && log->contains( QByteArray("rdyread") ) )
+    if(log->contains( QByteArray("rdyread") ) &&  idStart )
     {
         char *logdata = log->data();
         logdata = logdata + log->indexOf("id: ");
@@ -62,7 +79,7 @@ void COM_handler::putData(const QByteArray &data)
         log->remove(0, log->length());
         idStart = false;
 
-        qDebug() << "readID : " << *readID << " ; crc :" << lastCRC ;
+        //qDebug() << "readID : " << *readID << " ; crc :" << lastCRC ;
 
         if(lastCRC)
             emit serialReady(QString::fromStdString(readID->toStdString()));
@@ -75,7 +92,7 @@ void COM_handler::putData(const QByteArray &data)
         sendID = readID; // debug
 
         idMeas = true;
-        qDebug() << "sendID: " << *sendID;
+        //qDebug() << "sendID: " << *sendID;
         uart->write(*sendID);
         log->remove(0, log->length());
     }
@@ -114,8 +131,9 @@ void COM_handler::connected()
 }
 
 void COM_handler::messung()
-{
-    uart->write("m");
+{   
+    //uart->write("m"); //single
+    uart->write("l");   //all
 }
 
 void COM_handler::requestSerial()
@@ -123,3 +141,31 @@ void COM_handler::requestSerial()
     uart->write("s");
     reqSerial = true;
 }
+
+void COM_handler::sendAllSensors()
+{
+    sendAll = true;
+    uart->write("a");
+}
+
+void COM_handler::updateAllSensors()
+{
+    allSensors->clear();
+    allSensors->append(sDialog->getAllSensors());
+    sendAllSensors();
+
+    /* debug */
+    /*
+    qDebug() << "All Sensor Debug :";
+    int j = 0;
+    QList<sensor*>::Iterator i;
+    for(i = allSensors->begin(); i != allSensors->end(); i++)
+    {
+        sensor *s = *i;
+        qDebug() << j << s->getSerial();
+        j++;
+    }
+    */
+
+}
+

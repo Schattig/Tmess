@@ -1,7 +1,6 @@
 #include "sensordialog.h"
 #include "ui_sensordialog.h"
 
-
 #include <QApplication>
 
 #include <QDebug>
@@ -19,6 +18,32 @@ void MyLineEdit::keyPressEvent(QKeyEvent *e)
     }
 }
 
+sensor::sensor(QString serial, int temp)
+{
+    this->serial = serial;
+    this->temp = temp;
+}
+
+void sensor::setSerial(QString serial)
+{
+    this->serial = serial;
+}
+
+void sensor::setTemp(int temp)
+{
+    this->temp = temp;
+}
+
+QString sensor::getSerial()
+{
+    return serial;
+}
+
+int sensor::getTemp()
+{
+    return temp;
+}
+
 SensorDialog::SensorDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SensorDialog)
@@ -29,11 +54,16 @@ SensorDialog::SensorDialog(QWidget *parent) :
 
     lineList = new QList<MyLineEdit*>;
 
+    mon1Front = new QList<sensor*>;
+    mon1Back = new QList<sensor*>;
+    mon2Front = new QList<sensor*>;
+    mon2Back = new QList<sensor*>;
+    other = new QList<sensor*>;
+
     //savePath =  QApplication::applicationDirPath().left(1) + ":/sensors.ini";
     savePath = "C:/QT 5.6 workspace/build-Tmess-Desktop_Qt_5_6_0_MinGW_32bit-Debug/sensors.ini";
     //qDebug() << savePath;
 
-    //save = new QSettings(savePath, QSettings::IniFormat);
     saveGroup1 = "Monitor_1";
     saveGroup2 = "Monitor_2";
     saveGroup3 = "Sonstige";
@@ -61,23 +91,25 @@ SensorDialog::~SensorDialog()
     delete ui;
 }
 
-SensorDialog::monitor SensorDialog::getMonitor1() const
+QList<sensor*> SensorDialog::getAllSensors()
 {
-    return sensMon1;
-}
+     QList<sensor*> allSensors;
 
-SensorDialog::monitor SensorDialog::getMonitor2() const
-{
-    return sensMon2;
-}
+     allSensors.append(*mon1Front);
+     allSensors.append(*mon1Back);
 
-sensors SensorDialog::getOther() const
-{
-    return sensOther;
+     allSensors.append(*mon2Front);
+     allSensors.append(*mon2Back);
+
+     allSensors.append(*other);
+
+     return allSensors;
 }
 
 void SensorDialog::putSerial(QString serial)
 {
+    sensor *s = new sensor(serial);
+
     QList<MyLineEdit*>::iterator i;
     for(i = lineList->begin(); i != lineList->end(); i++)
     {
@@ -92,32 +124,31 @@ void SensorDialog::putSerial(QString serial)
             int offsetH = SensCount::Front;
 
             if(index >= offsetL && index < offsetH)         // 0 to 8
-                sensMon1.front.replaceSensor(index, serial);
+                mon1Front->replace(index, s);
 
             offsetL = offsetH;                              // 9
             offsetH = offsetL + SensCount::Back;            // 9 + 3
 
             if(index >= offsetL && index < offsetH)         // 9 to 11
-                sensMon1.back.replaceSensor(index, serial);
+                mon1Back->replace(index, s);
 
             offsetL = offsetH;                              // 12
             offsetH = offsetL + SensCount::Front;           // 12 + 9
 
             if(index >= offsetL && index < offsetH)         // 12 to 20
-                sensMon2.front.replaceSensor(index, serial);
+                mon2Front->replace(index, s);
 
             offsetL = offsetH;                              // 21
             offsetH = offsetL + SensCount::Back;            // 21 + 3
 
             if(index >= offsetL && index < offsetH)         // 21 to 23
-                sensMon2.back.replaceSensor(index, serial);
+                 mon2Back->replace(index, s);
 
             offsetL = offsetH;                              // 24
             offsetH = offsetL + SensCount::Other;           // 24 + 2
 
             if(index >= offsetL && index < offsetH)         // 24 to 25
-                sensOther.replaceSensor(index, serial);
-
+                other->replace(index, s);
         }
     }
 }
@@ -125,6 +156,7 @@ void SensorDialog::putSerial(QString serial)
 void SensorDialog::apply()
 {
     hide();
+    emit sensorsChanged();
 }
 
 void SensorDialog::readSerialClicked()
@@ -136,14 +168,17 @@ void SensorDialog::openSerials()
 {
     QSettings open(savePath, QSettings::IniFormat);
     int offset = 0;
+    sensor *s;
+    QString serial;
 
     open.beginGroup(saveGroup1);
     open.beginGroup(front);
     for(int i = 0; i < SensCount::Front; i++)
     {
-        QString s = open.value(QString("%1").arg(i)).toString();
-        sensMon1.front.replaceSensor(i, s);
-        lineList->at(i + offset)->setText(s);
+        serial = open.value(QString("%1").arg(i)).toString();
+        s = new sensor(serial);
+        mon1Front->replace(i, s);
+        lineList->at(i + offset)->setText(serial);
     }
     open.endGroup();
 
@@ -152,9 +187,10 @@ void SensorDialog::openSerials()
     open.beginGroup(back);
     for(int i = 0; i < SensCount::Back; i++)
     {
-        QString s = open.value(QString("%1").arg(i)).toString();
-        sensMon1.back.replaceSensor(i, s);
-        lineList->at(i + offset)->setText(s);
+        serial = open.value(QString("%1").arg(i)).toString();
+        s = new sensor(serial);
+        mon1Back->replace(i, s);
+        lineList->at(i + offset)->setText(serial);
     }
     open.endGroup();
     open.endGroup();
@@ -165,9 +201,10 @@ void SensorDialog::openSerials()
     open.beginGroup(front);
     for(int i = 0; i < SensCount::Front; i++)
     {
-        QString s = open.value(QString("%1").arg(i)).toString();
-        sensMon2.front.replaceSensor(i, s);
-        lineList->at(i + offset)->setText(s);
+        serial = open.value(QString("%1").arg(i)).toString();
+        s = new sensor(serial);
+        mon2Front->replace(i, s);
+        lineList->at(i + offset)->setText(serial);
     }
     open.endGroup();
 
@@ -176,9 +213,10 @@ void SensorDialog::openSerials()
     open.beginGroup(back);
     for(int i = 0; i < SensCount::Back; i++)
     {
-        QString s = open.value(QString("%1").arg(i)).toString();
-        sensMon2.back.replaceSensor(i, s);
-        lineList->at(i + offset)->setText(s);
+        serial = open.value(QString("%1").arg(i)).toString();
+        s = new sensor(serial);
+        mon2Back->replace(i, s);
+        lineList->at(i + offset)->setText(serial);
     }
     open.endGroup();
     open.endGroup();
@@ -188,9 +226,10 @@ void SensorDialog::openSerials()
     open.beginGroup(saveGroup3);
     for(int i = 0; i < SensCount::Other; i++)
     {
-        QString s = open.value(QString("%1").arg(i)).toString();
-        sensOther.replaceSensor(i, s);
-        lineList->at(i + offset)->setText(s);
+        serial = open.value(QString("%1").arg(i)).toString();
+        s = new sensor(serial);
+        other->replace(i, s);
+        lineList->at(i + offset)->setText(serial);
     }
     open.endGroup();
 }
@@ -198,44 +237,62 @@ void SensorDialog::openSerials()
 void SensorDialog::saveSerials()
 {
     QSettings save(savePath, QSettings::IniFormat);
+    QList<sensor*>::Iterator i;
+    sensor *s;
+    int j = 0;
 
     save.beginGroup(saveGroup1);
     save.beginGroup(front);
-    for(int i = 0; i < sensMon1.front.length(); i++)
+    for(i = mon1Front->begin(); i != mon1Front->end(); i++)
     {
-        save.setValue(QString("%1").arg(i), sensMon1.front.sensorAt(i));
+        s = *i;
+        save.setValue(QString("%1").arg(j), s->getSerial());
+        j++;
     }
+    j = 0;
     save.endGroup();
 
     save.beginGroup(back);
-    for(int i = 0; i < sensMon1.back.length(); i++)
+    for(i = mon1Back->begin(); i != mon1Back->end(); i++)
     {
-        save.setValue(QString("%1").arg(i), sensMon1.back.sensorAt(i));
+        s = *i;
+        save.setValue(QString("%1").arg(j), s->getSerial());
+        j++;
     }
+    j = 0;
     save.endGroup();
     save.endGroup();
 
     save.beginGroup(saveGroup2);
     save.beginGroup(front);
-    for(int i = 0; i < sensMon2.front.length(); i++)
+    for(i = mon2Front->begin(); i != mon2Front->end(); i++)
     {
-        save.setValue(QString("%1").arg(i), sensMon2.front.sensorAt(i));
+        s = *i;
+        save.setValue(QString("%1").arg(j), s->getSerial());
+        j++;
     }
+    j = 0;
     save.endGroup();
 
     save.beginGroup(back);
-    for(int i = 0; i < sensMon2.back.length(); i++)
+    for(i = mon2Back->begin(); i != mon2Back->end(); i++)
     {
-        save.setValue(QString("%1").arg(i), sensMon2.back.sensorAt(i));
+        s = *i;
+        save.setValue(QString("%1").arg(j), s->getSerial());
+        j++;
     }
+    j = 0;
     save.endGroup();
     save.endGroup();
 
     save.beginGroup(saveGroup3);
-    for(int i = 0; i < sensOther.length(); i++)
+    for(i = other->begin(); i != other->end(); i++)
     {
-        save.setValue(QString("%1").arg(i), sensOther.sensorAt(i));
+        s = *i;
+        save.setValue(QString("%1").arg(j), s->getSerial());
+        j++;
     }
+    j = 0;
     save.endGroup();
 
     //qDebug() << save.allKeys();
@@ -243,23 +300,26 @@ void SensorDialog::saveSerials()
 
 void SensorDialog::init()
 {
-    QString initVal = "0";
-
     for(int i = 0; i < SensCount::Front; i++)
     {
-        sensMon1.front.insertSensor(i, initVal);
-        sensMon2.front.insertSensor(i, initVal);
+        sensor *s1 = new sensor("0");
+        sensor *s2 = new sensor("0");
+        mon1Front->append(s1);
+        mon2Front->append(s2);
     }
 
     for(int i = 0; i < SensCount::Back; i++)
     {
-        sensMon1.back.insertSensor(i, initVal);
-        sensMon2.back.insertSensor(i, initVal);
+        sensor *s1 = new sensor("0");
+        sensor *s2 = new sensor("0");
+        mon1Back->append(s1);
+        mon2Back->append(s2);
     }
 
     for(int i = 0; i < SensCount::Other; i++)
     {
-        sensOther.insertSensor(i, initVal);
+        sensor *s = new sensor("0");
+        other->append(s);
     }
 }
 

@@ -13,7 +13,6 @@
 #include "modbus.h"
 #include "pyranobox.h"
 #include "mod_handler.h"
-//#include "sensors.h"
 #include "sensordialog.h"
 
 namespace Ui {

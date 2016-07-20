@@ -27,7 +27,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
 
     int row = 0;
     int column = 0;
-    for(int i = 0; i < NumSensorF; i++)
+    for(int i = 0; i < SensorDialog::SensCount::Front; i++)
     {
         if(i % 3 == 0)
         {
@@ -42,7 +42,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
 
         column++;
     }
-    for(int i = 0; i < NumSensorB; i++)
+    for(int i = 0; i < SensorDialog::SensCount::Back; i++)
     {
         sensorsB[i] = new QLineEdit;
         sensorsB[i]->setFixedSize(sizeTemp);
@@ -74,6 +74,30 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     connect(pinSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(portComboboxChanged(int)));
 }
 
+void SensorBox::fillFront(int temp[SensorDialog::SensCount::Front])
+{
+    for(int i = 0; i < SensorDialog::SensCount::Front; i++)
+    {
+        sensorsF[i]->setText(generateTemp(temp[i]));
+    }
+}
+
+void SensorBox::fillBack(int temp[SensorDialog::SensCount::Back])
+{
+    for(int i = 0; i < SensorDialog::SensCount::Back; i++)
+    {
+        sensorsB[i]->setText(generateTemp(temp[i]));
+    }
+}
+
+QString SensorBox::generateTemp(int temp)
+{
+    double dtemp;
+    dtemp = static_cast<double>(temp);
+    dtemp = dtemp / 10;
+    return QString("%1").arg(dtemp);
+}
+
 void SensorBox::checkActiveChanged(int state)
 {
     if(state == Qt::Checked)
@@ -85,7 +109,7 @@ void SensorBox::checkActiveChanged(int state)
     if(state == Qt::Unchecked)
     {
         //setEnabled(false);
-        clearTemp();
+        clear();
         emit checkChanged(false);
         enabled = false;
     }
@@ -94,12 +118,12 @@ void SensorBox::checkActiveChanged(int state)
 
 void SensorBox::setEnabled(bool enable)
 {
-    for(int i = 0 ; i < NumSensorF; i++)
+    for(int i = 0 ; i < SensorDialog::SensCount::Front; i++)
     {
         sensorsF[i]->setEnabled(enable);
     }
 
-    for(int i = 0 ; i < NumSensorB; i++)
+    for(int i = 0 ; i < SensorDialog::SensCount::Back; i++)
     {
         sensorsB[i]->setEnabled(enable);
     }
@@ -110,6 +134,7 @@ bool SensorBox::isEnabled()
     return enabled;
 }
 
+/*
 void SensorBox::writeTemp(int temp, int sensor, Position position)
 {
     if(isEnabled() == false)
@@ -131,20 +156,22 @@ void SensorBox::writeTemp(int temp, int sensor, Position position)
         }
     }
 }
+*/
 
-void SensorBox::clearTemp()
+void SensorBox::clear()
 {
-    for(int i = 0 ; i < NumSensorF; i++)
+    for(int i = 0 ; i < SensorDialog::SensCount::Front; i++)
     {
         sensorsF[i]->setText("");
     }
 
-    for(int i = 0 ; i < NumSensorB; i++)
+    for(int i = 0 ; i < SensorDialog::SensCount::Back; i++)
     {
         sensorsB[i]->setText("");
     }
 }
 
+/*
 void SensorBox::addPort(QString text, sensors::Port port)
 {
     pinSelect->addItem(text, port);
@@ -158,9 +185,11 @@ void SensorBox::addPort(QList<sensorEntry> sensors)
         addPort(sensors[i].name, sensors[i].port);
     }
 }
+*/
 
 int SensorBox::portComboboxChanged(int index)
 {
+    /*
     if(pinSelect->currentData() == sensors::Pin1)
         currentPort = sensors::Pin1;
     if(pinSelect->currentData() == sensors::Pin2)
@@ -169,9 +198,14 @@ int SensorBox::portComboboxChanged(int index)
         currentPort = sensors::Pin3;
 
     return index;
+    */
+
+    return index;
 }
 
+/*
 sensors::Port SensorBox::getPort()
 {
     return currentPort;
 }
+*/

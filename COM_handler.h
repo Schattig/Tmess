@@ -5,6 +5,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QStateMachine>
+#include <QList>
 #include "uart.h"
 #include "sensordialog.h"
 
@@ -30,18 +31,23 @@ public slots:
 private:
     UART *uart;
     SensorDialog *sDialog;
-    SensorDialog::monitor mon1;
-    SensorDialog::monitor mon2;
-    sensors *other;
+    QList<sensor*> *allSensors;
     QByteArray *log;
 
     bool idStart = false;
     bool idMeas = false;
     bool reqSerial = false;
+    bool sendAll = false;
     QByteArray *readID;
     QByteArray *sendID;
     bool lastCRC = false;
     QString lastTemp;
+
+    void sendAllSensors();
+
+private slots:
+    void updateAllSensors();
+
 };
 
 #endif // COM_handler_H

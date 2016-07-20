@@ -6,49 +6,53 @@
 #include <QComboBox>
 #include <QList>
 
-#include "sensors.h"
+#include "sensordialog.h"
 
 class SensorBox : public QWidget
 {
     Q_OBJECT
 public:
-    enum Position { Front, Back };
+    //enum Position { Front, Back };
 
+    /*
     struct sensorEntry{
         QString name;
         sensors::Port port;
     };
+    */
 
     explicit SensorBox(QString name, QWidget *parent = 0);
 
     void setEnabled(bool enable);
-    void writeTemp(int temp, int sensor, Position position);
+    void fillFront(int temp[SensorDialog::SensCount::Front]);
+    void fillBack(int temp[SensorDialog::SensCount::Back]);
 
-    void addPort(QString text, sensors::Port port);
-    void addPort(QList<sensorEntry> sensors);
+    //void addPort(QString text, sensors::Port port);
+    //void addPort(QList<sensorEntry> sensors);
 
     bool isEnabled();
 
-    sensors::Port getPort();
+    //sensors::Port getPort();
 
 signals:
     void checkChanged(bool state);
-    void portChanged(sensors::Port);
+    //void portChanged(sensors::Port);
 
 private slots:
     void checkActiveChanged(int state);
     int portComboboxChanged(int index);
 
 private:
-    enum {NumSensorB = 3, NumSensorF = 9};
-    QLineEdit *sensorsF[NumSensorF];
-    QLineEdit *sensorsB[NumSensorB];
+    QLineEdit *sensorsF[SensorDialog::SensCount::Front];
+    QLineEdit *sensorsB[SensorDialog::SensCount::Back];
     QComboBox *pinSelect;
     bool enabled = false;
 
-    sensors::Port currentPort;
+    QString generateTemp(int temp);
 
-    void clearTemp();
+    //sensors::Port currentPort;
+
+    void clear();
 };
 
 #endif // SENSORBOX_H
