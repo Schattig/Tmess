@@ -77,13 +77,20 @@ void UART::handleError(QSerialPort::SerialPortError err)
 void UART::readData()
 {
        QByteArray data = serial->readAll();
+       qDebug() << data;
        emit readyRead(data);
-
 }
 
 void UART::write(const QByteArray &data)
 {
     serial->write(data);
+}
+
+void UART::newLine()
+{
+    QByteArray a = QByteArray("\r\n");
+    serial->write(a);
+    //qDebug() << "newline : " << a;
 }
 
 bool UART::isOpen()

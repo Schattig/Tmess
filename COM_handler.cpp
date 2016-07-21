@@ -9,7 +9,15 @@ COM_handler::COM_handler(UART *uart, SensorDialog *sDialog)
     log = new QByteArray();
     readID = new QByteArray();
     sendID = new QByteArray();
-    allSensors = new QList<sensor*>;
+    //allSensors = new QList<sensor*>;
+
+    mon1F = new QList<sensor*>;
+    mon1B = new QList<sensor*>;
+    mon2F = new QList<sensor*>;
+    mon2B = new QList<sensor*>;
+    other = new QList<sensor*>;
+
+    sDialog->initAllSensors(mon1F, mon1B, mon2F, mon2B, other);
 
     updateAllSensors();
 
@@ -30,7 +38,79 @@ void COM_handler::putData(const QByteArray &data)
 
     if( log->contains( QByteArray("case get all") ) && sendAll  )
     {
+        QList<sensor*>::Iterator i;
+        sensor *s;
 
+        if( log->contains( QByteArray("mon1") ) && mon1)
+        {
+            for(i = mon1F->begin(); i != mon1F->end(); i++)
+            {
+                s = *i;
+                sendSensor(s);
+            }
+            for(i = mon1B->begin(); i != mon1B->end(); i++)
+            {
+                s = *i;
+                sendSensor(s);
+            }
+            mon1 = false;
+        }
+
+        if( log->contains( QByteArray("mon2") ) && mon2)
+        {
+            for(i = mon2F->begin(); i != mon2F->end(); i++)
+            {
+                s = *i;
+                sendSensor(s);
+            }
+            for(i = mon2B->begin(); i != mon2B->end(); i++)
+            {
+                s = *i;
+                sendSensor(s);
+            }
+            mon2 = false;
+        }
+
+        if( log->contains( QByteArray("other") ) && others)
+        {
+            for(i = other->begin(); i != other->end(); i++)
+            {
+                s = *i;
+                sendSensor(s);
+            }
+
+            others = false;
+        }
+
+        if(!mon1 && !mon2) //&& !others)
+        {
+            sendAll = false;
+            mon1 = true;
+            mon2 = true;
+            others = true;
+            log->remove(0, log->length());
+        }
+
+        /*
+        sendAll = false;
+
+        QList<sensor*>::Iterator i;
+        sensor *s;
+        for(i = allSensors->begin(); i != allSensors->end(); i++)
+        {
+            QByteArray a;
+            s = *i;
+            QString serial = s->getSerial();
+            if(serial == "")
+                a = QByteArray("0000000000000000");
+            else
+                a = QByteArray().append(serial);
+
+            qDebug() << a;
+            uart->write(a);
+            uart->newLine();
+        }
+        */
     }
 
     if( log->contains( QByteArray("id: ") ) && reqSerial  )
@@ -59,10 +139,8 @@ void COM_handler::putData(const QByteArray &data)
         {
             //qDebug() << i << " : [" << *logdata << "]" ;
 
-            if(i == 6 || i == 7 ){
+            if(i == 6 || i == 7 )
                 readID->append(*logdata);
-            }
-
 
             if(i >= 10 && i < 22)
                 readID->append(*logdata);
@@ -122,7 +200,6 @@ void COM_handler::putData(const QByteArray &data)
 
         emit measReady(lastTemp);
     }
-
 }
 
 void COM_handler::connected()
@@ -148,10 +225,23 @@ void COM_handler::sendAllSensors()
     uart->write("a");
 }
 
+void COM_handler::sendSensor(sensor *s)
+{
+    QByteArray a;
+    QString serial = s->getSerial();
+    if(serial == "")
+        a = QByteArray("0000000000000000");
+    else
+        a = QByteArray().append(serial);
+
+    qDebug() << a;
+    uart->write(a);
+    uart->newLine();
+}
+
 void COM_handler::updateAllSensors()
 {
-    allSensors->clear();
-    allSensors->append(sDialog->getAllSensors());
+    sDialog->getAllSensors(mon1F, mon1B, mon2F, mon2B, other);
     sendAllSensors();
 
     /* debug */

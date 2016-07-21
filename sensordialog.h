@@ -44,13 +44,20 @@ public:
     enum SensCount{
         Front = 9,
         Back = 3,
-        Other = 2
+        Other = 2,
+        All = 2*(Front + Back) + Other
     };
 
     explicit SensorDialog(QWidget *parent = 0);
     ~SensorDialog();
 
-     QList<sensor*> getAllSensors();
+     void getAllSensors(QList<sensor*> *mon1F, QList<sensor*> *mon1B,
+                        QList<sensor*> *mon2F, QList<sensor*> *mon2B,
+                        QList<sensor*> *other);
+
+     void initAllSensors(QList<sensor*> *mon1F, QList<sensor*> *mon1B,
+                         QList<sensor*> *mon2F, QList<sensor*> *mon2B,
+                         QList<sensor*> *other);
 
 signals:
     void requestSerial();

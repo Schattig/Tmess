@@ -200,7 +200,7 @@ void MainWindow::serialOpened()
 void MainWindow::serialClosed()
 {
     messIntervall->stop();
-    console->setDisabled(true);
+    //console->setDisabled(true);
     actionConnect->setEnabled(true);
     actionDisconnect->setDisabled(true);
     actionStart->setDisabled(true);

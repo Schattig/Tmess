@@ -91,10 +91,94 @@ SensorDialog::~SensorDialog()
     delete ui;
 }
 
-QList<sensor*> SensorDialog::getAllSensors()
+void SensorDialog::getAllSensors(QList<sensor*> *mon1F, QList<sensor*> *mon1B,
+                                 QList<sensor*> *mon2F, QList<sensor*> *mon2B,
+                                 QList<sensor*> *other)
 {
+    QList<sensor*>::Iterator i;
+    int j = 0;
+    for(i = mon1Front->begin(); i != mon1Front->end(); i++)
+    {
+        mon1F->replace(j, *i);
+        j++;
+    }
+    j = 0;
+    for(i = mon1Back->begin(); i != mon1Back->end(); i++)
+    {
+        mon1B->replace(j, *i);
+        j++;
+    }
+    j = 0;
+
+    for(i = mon2Front->begin(); i != mon2Front->end(); i++)
+    {
+        mon2F->replace(j, *i);
+        j++;
+    }
+    j = 0;
+    for(i = mon2Back->begin(); i != mon2Back->end(); i++)
+    {
+        mon2B->replace(j, *i);
+        j++;
+    }
+    j = 0;
+
+    for(i = this->other->begin(); i != this->other->end(); i++)
+    {
+        other->replace(j, *i);
+        j++;
+    }
+
+    /*
      QList<sensor*> allSensors;
 
+     for(int i = 0; i < SensCount::All; i++)
+     {
+         sensor *s = new sensor("0");
+         allSensors.append(s);
+     }
+
+     QList<sensor*>::Iterator i;
+     sensor *s;
+     int j = 0;
+     for(i = mon1Front->begin(); i != mon1Front->end(); i++)
+     {
+         s = *i;
+         allSensors.replace(j, s);
+         j++;
+     }
+     for(i = mon1Back->begin(); i != mon1Back->end(); i++)
+     {
+         s = *i;
+         allSensors.replace(j, s);
+         j++;
+     }
+
+     for(i = mon2Front->begin(); i != mon2Front->end(); i++)
+     {
+         s = *i;
+         allSensors.replace(j, s);
+         j++;
+     }
+     for(i = mon2Back->begin(); i != mon2Back->end(); i++)
+     {
+         s = *i;
+         allSensors.replace(j, s);
+         j++;
+     }
+
+     for(i = other->begin(); i != other->end(); i++)
+     {
+         s = *i;
+         allSensors.replace(j, s);
+         j++;
+     }
+
+     if(j != SensCount::All)
+         qDebug() << "Fehler: allSensor List falsche größe";
+     */
+
+     /*
      allSensors.append(*mon1Front);
      allSensors.append(*mon1Back);
 
@@ -102,8 +186,9 @@ QList<sensor*> SensorDialog::getAllSensors()
      allSensors.append(*mon2Back);
 
      allSensors.append(*other);
+     */
 
-     return allSensors;
+     //return allSensors;
 }
 
 void SensorDialog::putSerial(QString serial)
@@ -124,31 +209,31 @@ void SensorDialog::putSerial(QString serial)
             int offsetH = SensCount::Front;
 
             if(index >= offsetL && index < offsetH)         // 0 to 8
-                mon1Front->replace(index, s);
+                mon1Front->replace((index - offsetL), s);
 
             offsetL = offsetH;                              // 9
             offsetH = offsetL + SensCount::Back;            // 9 + 3
 
             if(index >= offsetL && index < offsetH)         // 9 to 11
-                mon1Back->replace(index, s);
+                mon1Back->replace((index - offsetL), s);
 
             offsetL = offsetH;                              // 12
             offsetH = offsetL + SensCount::Front;           // 12 + 9
 
             if(index >= offsetL && index < offsetH)         // 12 to 20
-                mon2Front->replace(index, s);
+                mon2Front->replace((index - offsetL), s);
 
             offsetL = offsetH;                              // 21
             offsetH = offsetL + SensCount::Back;            // 21 + 3
 
             if(index >= offsetL && index < offsetH)         // 21 to 23
-                 mon2Back->replace(index, s);
+                 mon2Back->replace((index - offsetL), s);
 
             offsetL = offsetH;                              // 24
             offsetH = offsetL + SensCount::Other;           // 24 + 2
 
             if(index >= offsetL && index < offsetH)         // 24 to 25
-                other->replace(index, s);
+                other->replace((index - offsetL), s);
         }
     }
 }
@@ -300,6 +385,8 @@ void SensorDialog::saveSerials()
 
 void SensorDialog::init()
 {
+    initAllSensors(mon1Front, mon1Back, mon2Front, mon2Back, other);
+    /*
     for(int i = 0; i < SensCount::Front; i++)
     {
         sensor *s1 = new sensor("0");
@@ -314,6 +401,34 @@ void SensorDialog::init()
         sensor *s2 = new sensor("0");
         mon1Back->append(s1);
         mon2Back->append(s2);
+    }
+
+    for(int i = 0; i < SensCount::Other; i++)
+    {
+        sensor *s = new sensor("0");
+        other->append(s);
+    }
+    */
+}
+
+void SensorDialog::initAllSensors(QList<sensor*> *mon1F, QList<sensor*> *mon1B,
+                                   QList<sensor*> *mon2F, QList<sensor*> *mon2B,
+                                   QList<sensor*> *other)
+{
+    for(int i = 0; i < SensCount::Front; i++)
+    {
+        sensor *s1 = new sensor("0");
+        sensor *s2 = new sensor("0");
+        mon1F->append(s1);
+        mon2F->append(s2);
+    }
+
+    for(int i = 0; i < SensCount::Back; i++)
+    {
+        sensor *s1 = new sensor("0");
+        sensor *s2 = new sensor("0");
+        mon1B->append(s1);
+        mon2B->append(s2);
     }
 
     for(int i = 0; i < SensCount::Other; i++)

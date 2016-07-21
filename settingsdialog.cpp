@@ -268,10 +268,10 @@ void SettingsDialog::fillPortsInfo()
 
     ui->serialPortInfoListBox->addItem(tr("Custom"));
 
-    // autoSet Serial Port to COM17
+    // autoSet Serial Port to COM11
     for (int i = 0; i < ui->serialPortInfoListBox->count(); i++)
     {
-        if(ui->serialPortInfoListBox->itemText(i) == "COM17")
+        if(ui->serialPortInfoListBox->itemText(i) == "COM11")
             ui->serialPortInfoListBox->setCurrentIndex(i);
     }
 

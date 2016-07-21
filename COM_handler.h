@@ -31,19 +31,30 @@ public slots:
 private:
     UART *uart;
     SensorDialog *sDialog;
-    QList<sensor*> *allSensors;
+    //QList<sensor*> *allSensors;
+    QList<sensor*> *mon1F;
+    QList<sensor*> *mon1B;
+    QList<sensor*> *mon2F;
+    QList<sensor*> *mon2B;
+    QList<sensor*> *other;
     QByteArray *log;
 
     bool idStart = false;
     bool idMeas = false;
     bool reqSerial = false;
     bool sendAll = false;
+
+    bool mon1 = true;
+    bool mon2 = true;
+    bool others = true;
+
     QByteArray *readID;
     QByteArray *sendID;
     bool lastCRC = false;
     QString lastTemp;
 
     void sendAllSensors();
+    void sendSensor(sensor *s);
 
 private slots:
     void updateAllSensors();
