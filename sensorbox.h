@@ -12,14 +12,16 @@ class SensorBox : public QWidget
 {
     Q_OBJECT
 public:
-    //enum Position { Front, Back };
 
     /*
+    enum Pin{PIN1, PIN2, PIN3};
+
     struct sensorEntry{
         QString name;
-        sensors::Port port;
+        Pin pin;
     };
     */
+
 
     explicit SensorBox(QString name, QWidget *parent = 0);
 
@@ -40,12 +42,12 @@ signals:
 
 private slots:
     void checkActiveChanged(int state);
-    int portComboboxChanged(int index);
+    //int portComboboxChanged(int index);
 
 private:
     QLineEdit *sensorsF[SensorDialog::SensCount::Front];
     QLineEdit *sensorsB[SensorDialog::SensCount::Back];
-    QComboBox *pinSelect;
+    //QComboBox *pinSelect;
     bool enabled = false;
 
     QString generateTemp(int temp);

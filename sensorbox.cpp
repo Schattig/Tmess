@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QSize>
+#include <QLabel>
 #include <QString>
 
 SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
@@ -15,7 +16,8 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QHBoxLayout *topLayout = new QHBoxLayout;
     QHBoxLayout *bottomLayout = new QHBoxLayout;
-    pinSelect = new QComboBox;
+    //pinSelect = new QComboBox;
+    QLabel *labelActive = new QLabel("aktiv:");
     QCheckBox *checkActive = new QCheckBox;
     QGroupBox *frontBox = new QGroupBox("Front");
     QGroupBox *rearBox = new QGroupBox("Haube");
@@ -56,7 +58,8 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     bottomLayout->addWidget(frontBox);
     bottomLayout->addWidget(rearBox);
 
-    topLayout->addWidget(pinSelect);
+    //topLayout->addWidget(pinSelect);
+    topLayout->addWidget(labelActive);
     topLayout->addWidget(checkActive);
 
     mainLayout->addLayout(topLayout);
@@ -71,7 +74,7 @@ SensorBox::SensorBox(QString name, QWidget *parent) : QWidget(parent)
     setEnabled(false);
 
     connect(checkActive, &QCheckBox::stateChanged, this, &SensorBox::checkActiveChanged);
-    connect(pinSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(portComboboxChanged(int)));
+    //connect(pinSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(portComboboxChanged(int)));
 }
 
 void SensorBox::fillFront(int temp[SensorDialog::SensCount::Front])
@@ -98,6 +101,7 @@ QString SensorBox::generateTemp(int temp)
     return QString("%1").arg(dtemp);
 }
 
+
 void SensorBox::checkActiveChanged(int state)
 {
     if(state == Qt::Checked)
@@ -115,6 +119,7 @@ void SensorBox::checkActiveChanged(int state)
     }
 
 }
+
 
 void SensorBox::setEnabled(bool enable)
 {
@@ -187,9 +192,10 @@ void SensorBox::addPort(QList<sensorEntry> sensors)
 }
 */
 
+/*
 int SensorBox::portComboboxChanged(int index)
 {
-    /*
+
     if(pinSelect->currentData() == sensors::Pin1)
         currentPort = sensors::Pin1;
     if(pinSelect->currentData() == sensors::Pin2)
@@ -198,10 +204,11 @@ int SensorBox::portComboboxChanged(int index)
         currentPort = sensors::Pin3;
 
     return index;
-    */
+
 
     return index;
 }
+*/
 
 /*
 sensors::Port SensorBox::getPort()
